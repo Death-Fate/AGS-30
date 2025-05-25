@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>АГС-30</title>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display :wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="apple_style.css">
+</head>
+<body>
+
+  <div class="theme-switch">
+    <button id="theme-toggle">○</button>
+  </div>
+
+  <div class="lang-switch">
+    <button onclick="setLang('ru')">RU</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+
+  <header>
+    <h1>АГС-30</h1>
+  </header>
+
+  <main>
+    <section id="about">
+      <div class="section-title" data-en="About the Project" data-ru="О проекте"></div>
+      <div class="section-text" id="about-text"></div>
+    </section>
+
+    <section id="advantages">
+      <div class="section-title" data-en="Advantages" data-ru="Преимущества"></div>
+      <div class="section-text" id="advantages-text"></div>
+    </section>
+
+    <section id="disadvantages">
+      <div class="section-title" data-en="Disadvantages" data-ru="Недостатки"></div>
+      <div class="section-text" id="disadvantages-text"></div>
+    </section>
+
+    <section id="connect" class="qr-section">
+      <div class="section-title" data-en="Connect to Channel" data-ru="Подключиться к каналу"></div>
+      <p id="qr-desc"></p>
+      <img src="" alt="QR Code" id="qr-code"/>
+      <p style="margin-top: 1rem;">
+        <a href="https://t.me/+6XXwEDM_YwE2NjQy " target="_blank" style="color: var(--accent-color);">Перейти в Telegram канал</a>
+      </p>
+    </section>
+  </main>
+
+  <div class="footer">
+    &copy; 2025 <span id="project-name">XXX Project</span>. All rights reserved.
+  </div>
+
+  <script>
+    const texts = {
+      ru: {
+        about: "Проект АГС-30 — это уникальная возможность погрузиться в мир игры Escape from Tarkov без лишних затрат и ограничений.",
+        advantages: [
+          "Низкая стоимость: Всего $10, тогда как официальная версия игры стоит $60.",
+          "Прокачанные боты ,улучшена графика ,удобные плагины.",
+          "Безопасность: Приватные серверы исключают появление читеров.",
+         
+        ],
+        disadvantages: [
+          "Отставание от обновлений: Версия игры может быть старше на 1–2 патча.",
+          "Временные простои: Сервер может быть недоступен из-за непредвиденных обстоятельств (например, проблемы с электричеством или интернетом)."
+        ],
+        qrDesc: "Отсканируйте QR-код, чтобы перейти в Telegram-канал.",
+        projectName: "АГС-30 Project",
+        lightThemeText: "Светлая тема",
+        darkThemeText: "Темная тема"
+      },
+      en: {
+        about: "The AGS-30 project is a unique opportunity to dive into the world of Escape from Tarkov without unnecessary costs and restrictions.",
+        advantages: [
+          "Low cost: Only $10, while the official version costs $60.",
+          "Upgraded bots, improved graphics, convenient plugins.",
+          "Security: Private servers eliminate cheaters."
+        ],
+        disadvantages: [
+          "Lagging behind updates: The game version may be 1–2 patches behind.",
+          "Temporary downtime: The server may be unavailable due to unforeseen circumstances (e.g., power or internet issues)."
+        ],
+        qrDesc: "Scan the QR code to access the Telegram channel.",
+        projectName: "AGS-30 Project",
+        lightThemeText: "Light Theme",
+        darkThemeText: "Dark Theme"
+      }
+    };
+
+    function setLang(lang) {
+      localStorage.setItem('lang', lang);
+      renderContent(lang);
+      // Обновляем текст кнопки темы после смены языка
+      const currentTheme = document.body.classList.contains('dark-theme') ? 'dark-theme' : 'light-theme';
+      updateThemeButtonText(currentTheme);
+    }
+
+    function renderContent(lang) {
+      const data = texts[lang];
+      document.getElementById("about-text").textContent = data.about;
+
+      const advantagesList = document.getElementById("advantages-text");
+      advantagesList.innerHTML = data.advantages.map(item => `<li>${item}</li>`).join('');
+
+      const disadvantagesList = document.getElementById("disadvantages-text");
+      disadvantagesList.innerHTML = data.disadvantages.map(item => `<li>${item}</li>`).join('');
+
+      document.getElementById("qr-desc").textContent = data.qrDesc;
+      document.getElementById("qr-code").src = `https://quickchart.io/qr?text=https%3A%2F%2Ft.me%2F%2B6XXwEDM_YwE2NjQy&size=200 `;
+
+      // Обновляем заголовки секций
+      document.querySelectorAll('.section-title').forEach(titleElement => {
+        titleElement.textContent = titleElement.getAttribute('data-' + lang);
+      });
+
+      // Обновляем заголовок сайта и тайтл вкладки
+      document.querySelector('header h1').textContent = (lang === 'ru' ? 'АГС-30' : 'AGS-30');
+      document.title = (lang === 'ru' ? 'АГС-30' : 'AGS-30');
+
+      // Обновляем название проекта в футере
+      document.getElementById('project-name').textContent = data.projectName;
+
+      // Обновляем активную кнопку языка
+      document.querySelectorAll('.lang-switch button').forEach(button => {
+        if (button.onclick.toString().includes(`setLang('${lang}')`)) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      });
+    }
+
+    // Язык по умолчанию
+    const savedLang = localStorage.getItem('lang') || 'ru';
+    renderContent(savedLang);
+
+    // Анимации при скролле
+    const sections = document.querySelectorAll('section');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    sections.forEach(section => observer.observe(section));
+
+    // Логика переключения темы
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Загрузка темы из localStorage при загрузке страницы
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      body.classList.add(savedTheme);
+    } else {
+      // Тема по умолчанию (светлая), если ничего не сохранено
+      body.classList.add('light-theme'); 
+    }
+
+    // Обновление текста кнопки темы при загрузке 
+    updateThemeButtonText(savedTheme || 'light-theme');
+
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (body.classList.contains('light-theme')) {
+        body.classList.remove('light-theme');
+        body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark-theme');
+        updateThemeButtonText('dark-theme');
+      } else {
+        body.classList.remove('dark-theme');
+        body.classList.add('light-theme');
+        localStorage.setItem('theme', 'light-theme');
+        updateThemeButtonText('light-theme');
+      }
+    });
+
+    // Функция для обновления текста кнопки темы (опционально)
+    function updateThemeButtonText(currentTheme) {
+        const currentLang = localStorage.getItem('lang') || 'ru'; // Получаем текущий язык
+        const themeTexts = texts[currentLang]; // Получаем тексты для текущего языка
+
+        if (currentTheme === 'dark-theme') {
+            themeToggleBtn.textContent = themeTexts.lightThemeText; // Используем текст для светлой темы из объекта texts
+        } else {
+            themeToggleBtn.textContent = themeTexts.darkThemeText; // Используем текст для темной темы из объекта texts
+        }
+    }
+
+  </script>
+
+</body>
+</html>
